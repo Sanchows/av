@@ -1,0 +1,2 @@
+class MaxRetryError(Exception):
+    pass
