@@ -13,6 +13,12 @@ from parsing.utils import gather_data
 
 
 def batch(iterable, size):
+    """
+    Chunks an iterable object to the items.
+
+    `batch((3, 4, 5, 6, 7, 8), 4)`
+    it will return: `((3, 4, 5, 6), (7, 8))`
+    """
     # Starting with Python 3.12, this exact implementation
     # is available as itertools.batched
 
