@@ -1,9 +1,11 @@
 import asyncio
 import itertools
 
-from actions.adverts import _create_adverts
-from actions.brands import _clean_brands, _create_brands
-from db.session import get_db
+from actions.adverts import create_adverts
+from actions.brands import clean_brands, create_brands
+from actions.models import clean_models, create_models
+
+
 from parsing.adverts import get_adverts_by_model
 from parsing.brands import get_brands
 from parsing.models import get_models_by_brand
@@ -21,23 +23,20 @@ def batch(iterable, size):
 
 async def main():
     brands = await get_brands()
-
-    async with get_db() as db:
-        await _clean_brands(db)
-
-    async with get_db() as db:
-        await _create_brands(brands=brands, session=db)
+    await clean_brands()
+    await create_brands(brands=brands)
 
     models = await gather_data(
         *(get_models_by_brand(brand=brand) for brand in brands),
     )
+    await clean_models()
+    await create_models(models=models)
 
     for batched_models in batch(models, 10):
         adverts = await gather_data(
             *(get_adverts_by_model(model=model) for model in batched_models)
         )
-        async with get_db() as db:
-            await _create_adverts(adverts=adverts, session=db)
+        await create_adverts(adverts=adverts)
 
 
 async def run():

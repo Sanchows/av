@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from db import tables
 from parsing.adverts import Advert
 from parsing.brands import Brand
+from parsing.models import Model
 
 
 class AdvertDAL:
@@ -59,6 +60,26 @@ class AdvertDAL:
             ),
         )
         await self.db_session.execute(query)
+
+
+class ModelDAL:
+    """Data Access Layer for operating advert info"""
+
+    def __init__(self, db_session: AsyncSession):
+        self.db_session = db_session
+
+    async def clean_models(self):
+        await self.db_session.execute(delete(tables.Model))
+
+    async def save_models(self, models: tuple[Model]):
+        self.db_session.add_all(
+            tables.Model(
+                model_id=model.model_id,
+                label=model.label,
+                brand_id=model.brand_id,
+            )
+            for model in models
+        )
 
 
 class BrandDAL:

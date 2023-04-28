@@ -16,7 +16,7 @@ async_session = sessionmaker(engine, class_=AsyncSession)
 
 
 @asynccontextmanager
-async def get_db():
+async def get_session():
     """Dependency for getting async session"""
 
     async with async_session() as session:
