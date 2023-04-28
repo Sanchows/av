@@ -1,5 +1,4 @@
 import asyncio
-from datetime import datetime
 import itertools
 
 from actions.adverts import _create_adverts
@@ -21,8 +20,6 @@ def batch(iterable, size):
 
 
 async def main():
-    start = datetime.now()
-
     brands = await get_brands()
 
     async with get_db() as db:
@@ -35,29 +32,12 @@ async def main():
         *(get_models_by_brand(brand=brand) for brand in brands),
     )
 
-    adverts = await gather_data(
-        *(get_adverts_by_model(model=model) for model in models)
-    )
-
-    start_saving = datetime.now()
-
-    # I caught an exception "the number of query arguments cannot exceed 32767"
-    # therefore, we will record 5000 pieces each:
-    MAX_SIZE_OF_ADVERTS_FOR_UPSERT = 5000
-    batched_adverts = tuple(batch(adverts, MAX_SIZE_OF_ADVERTS_FOR_UPSERT))
-    try:
-        for ads in batched_adverts:
-            async with get_db() as db:
-                await _create_adverts(adverts=ads, session=db)
-    except Exception as e:
-        print(str(e)[:2000])
-        import sys
-        sys.exit()
-
-    finish_saving = datetime.now()
-    finish = datetime.now()
-    print(finish - start)
-    print(finish_saving - start_saving)
+    for batched_models in batch(models, 10):
+        adverts = await gather_data(
+            *(get_adverts_by_model(model=model) for model in batched_models)
+        )
+        async with get_db() as db:
+            await _create_adverts(adverts=adverts, session=db)
 
 
 async def run():
