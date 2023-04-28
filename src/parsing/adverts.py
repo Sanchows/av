@@ -83,13 +83,6 @@ async def get_adverts_by_model(model: Model) -> list[Advert]:
             )
         )
 
-    # for some unknown reason, there are several non-unique ads on the website
-    unique_ids = set({})
-
-    for advert in adverts:
-        if advert.advert_id in unique_ids:
-            adverts.remove(advert)
-        unique_ids.add(advert.advert_id)
     return adverts
 
 
