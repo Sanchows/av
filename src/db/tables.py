@@ -51,3 +51,11 @@ class Model(Base, SavedUpdatedAt):
     model_id = Column(Integer, primary_key=True)
     label = Column(String(255), nullable=True)
     brand_id = Column(Integer, ForeignKey(Brand.brand_id))
+
+
+class Phone(Base):
+    __tablename__ = "phone"
+
+    model_id = Column(Integer, primary_key=True)
+    code = Column(String(8), nullable=False)
+    number = Column(Integer, nullable=False)
