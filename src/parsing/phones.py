@@ -20,11 +20,10 @@ async def _get_phones(advert_id: int) -> tuple[Phone] | None:
     if not r:
         return None
 
-    phones = r.json()
     return tuple(
         Phone(
             code=item["country"]["code"],
             number=item["number"],
         )
-        for item in phones
+        for item in r.json()
     )
