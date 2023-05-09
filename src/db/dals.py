@@ -3,11 +3,13 @@ import datetime
 from sqlalchemy import and_, delete, or_
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from db import tables
 from parsing.adverts import Advert
 from parsing.brands import Brand
 from parsing.models import Model
+from parsing.phones import Phone
 
 
 class AdvertDAL:
@@ -61,9 +63,14 @@ class AdvertDAL:
         )
         await self.db_session.execute(query)
 
+    async def get_all_adverts(self, *args, **kwargs):
+        q = select(tables.Advert.advert_id)
+        result = await self.db_session.execute(q)
+        return result.scalars().all()
+
 
 class ModelDAL:
-    """Data Access Layer for operating advert info"""
+    """Data Access Layer for operating model info"""
 
     def __init__(self, db_session: AsyncSession):
         self.db_session = db_session
@@ -101,3 +108,23 @@ class BrandDAL:
             )
             for brand in brands
         )
+
+
+# class PhoneDAL:
+#     """Data Access Layer for operating phone info"""
+
+#     def __init__(self, db_session: AsyncSession):
+#         self.db_session = db_session
+
+#     async def clean_phones(self):
+#         await self.db_session.execute(delete(tables.Phone))
+
+#     async def save_phones(self, phones: tuple[Phone]):
+#         self.db_session.add_all(
+#             tables.Phone(
+#                 model_id=phone.model_id,
+#                 code=phone.code,
+#                 number=phone.number,
+#             )
+#             for phone in phones
+#         )
