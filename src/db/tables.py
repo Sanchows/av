@@ -92,9 +92,3 @@ class PhoneAdvert(Base):
 
     # advert = relationship("Advert", foreign_keys=[advert_id])
     # phone = relationship("Phone", foreign_keys=[code, number])
-
-    phone_id = Column(Integer, ForeignKey("phone.phone_id"), primary_key=True)
-
-    model_id = Column(Integer, primary_key=True)
-    code = Column(String(8), nullable=False)
-    number = Column(Integer, nullable=False)
