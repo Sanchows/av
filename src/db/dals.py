@@ -2,6 +2,7 @@ from sqlalchemy import and_, delete, or_
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 
 from db import tables
 from parsing.adverts import Advert

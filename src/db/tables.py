@@ -78,3 +78,7 @@ class PhoneAdvert(Base):
         Integer, ForeignKey("advert.advert_id"), primary_key=True
     )
     phone_id = Column(Integer, ForeignKey("phone.phone_id"), primary_key=True)
+=======
+    model_id = Column(Integer, primary_key=True)
+    code = Column(String(8), nullable=False)
+    number = Column(Integer, nullable=False)
