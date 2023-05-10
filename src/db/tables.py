@@ -34,7 +34,9 @@ class Advert(Base, SavedUpdatedAt):
     published_at = Column(DateTime(timezone=True), nullable=False)
     refreshed_at = Column(DateTime(timezone=True), nullable=True)
 
-    phones = relationship("Phone", back_populates="phone")
+    phones = relationship(
+        "Phone", secondary="phone_advert", back_populates="phone"
+    )
 
 
 class Brand(Base, SavedUpdatedAt):
@@ -61,11 +63,13 @@ class Phone(Base):
     phone_id = Column(Integer, primary_key=True)
     code = Column(String(8), nullable=False)
     number = Column(Integer, nullable=False)
-    adverts = relationship("Advert", back_populates="advert")
+    adverts = relationship(
+        "Advert", secondary="phone_advert", back_populates="advert"
+    )
 
 
-class Association(Base):
-    __tablename__ = "association_table"
+class PhoneAdvert(Base):
+    __tablename__ = "phone_advert"
 
     advert_id = Column(
         Integer, ForeignKey("advert.advert_id"), primary_key=True
