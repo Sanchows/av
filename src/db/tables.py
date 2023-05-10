@@ -1,8 +1,8 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
-
 
 Base = declarative_base()
 
@@ -34,6 +34,8 @@ class Advert(Base, SavedUpdatedAt):
     published_at = Column(DateTime(timezone=True), nullable=False)
     refreshed_at = Column(DateTime(timezone=True), nullable=True)
 
+    phones = relationship('Phone', back_populates="phone")
+
 
 class Brand(Base, SavedUpdatedAt):
     __tablename__ = "brand"
@@ -56,6 +58,19 @@ class Model(Base, SavedUpdatedAt):
 class Phone(Base):
     __tablename__ = "phone"
 
-    model_id = Column(Integer, primary_key=True)
+    phone_id = Column(Integer, primary_key=True)
     code = Column(String(8), nullable=False)
     number = Column(Integer, nullable=False)
+    adverts = relationship('Advert', back_populates="advert")
+
+
+class Association(Base):
+    __tablename__ = "association_table"
+
+    advert_id = Column(
+        Integer, ForeignKey("advert.advert_id"), primary_key=True
+    )
+    phone_id = Column(Integer, ForeignKey("phone.phone_id"), primary_key=True)
+
+    advert = relationship('Advert', back_populates="phones")
+    phone = relationship('Phone', back_populates="adverts")
