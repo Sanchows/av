@@ -1,10 +1,12 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.ext.compiler import compiles
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
 
-Base = declarative_base()
+
+class Base(DeclarativeBase):
+    pass
 
 
 class utcnow(expression.FunctionElement):
@@ -35,7 +37,7 @@ class Advert(Base, SavedUpdatedAt):
     refreshed_at = Column(DateTime(timezone=True), nullable=True)
 
     phones = relationship(
-        "Phone", secondary="phone_advert", back_populates="phone"
+        "Phone", secondary="phone_advert", back_populates="advert"
     )
 
 
@@ -64,7 +66,7 @@ class Phone(Base):
     code = Column(String(8), nullable=False)
     number = Column(Integer, nullable=False)
     adverts = relationship(
-        "Advert", secondary="phone_advert", back_populates="advert"
+        "Advert", secondary="phone_advert", back_populates="phone"
     )
 
 
