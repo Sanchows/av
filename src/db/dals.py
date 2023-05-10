@@ -1,6 +1,5 @@
-import datetime
-
 from sqlalchemy import and_, delete, or_
+from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
@@ -29,7 +28,6 @@ class AdvertDAL:
                 description=advert.description,
                 refreshed_at=advert.refreshed_at,
                 published_at=advert.published_at,
-                updated_at=datetime.datetime.utcnow(),
             )
             for advert in adverts
         )

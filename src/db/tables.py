@@ -1,10 +1,12 @@
 from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.ext.compiler import compiles
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import expression
 
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class utcnow(expression.FunctionElement):
@@ -21,8 +23,7 @@ class SavedUpdatedAt:
     # Datetime of saving to db
 
     # People recommend to use server_default
-    saved_at = Column(DateTime(), server_default=utcnow(), nullable=False)
-    updated_at = Column(DateTime(), nullable=True)
+    saved_at = Column(DateTime(), default=utcnow(), nullable=False)
 
 
 class Advert(Base, SavedUpdatedAt):
@@ -33,6 +34,11 @@ class Advert(Base, SavedUpdatedAt):
     description = Column(String(255), nullable=True)
     published_at = Column(DateTime(timezone=True), nullable=False)
     refreshed_at = Column(DateTime(timezone=True), nullable=True)
+    updated_at = Column(DateTime(), default=utcnow(), nullable=False)
+
+    phones = relationship(
+        "Phone", secondary="phone_advert",
+    )
 
 
 class Brand(Base, SavedUpdatedAt):
@@ -56,6 +62,23 @@ class Model(Base, SavedUpdatedAt):
 class Phone(Base):
     __tablename__ = "phone"
 
+    phone_id = Column(Integer, primary_key=True)
+    code = Column(String(8), nullable=False)
+    number = Column(Integer, nullable=False)
+
+    adverts = relationship(
+        "Advert", secondary="phone_advert", back_populates="phones",
+    )
+
+
+class PhoneAdvert(Base):
+    __tablename__ = "phone_advert"
+
+    advert_id = Column(
+        Integer, ForeignKey("advert.advert_id"), primary_key=True
+    )
+    phone_id = Column(Integer, ForeignKey("phone.phone_id"), primary_key=True)
+=======
     model_id = Column(Integer, primary_key=True)
     code = Column(String(8), nullable=False)
     number = Column(Integer, nullable=False)
