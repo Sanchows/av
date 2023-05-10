@@ -39,7 +39,7 @@ class SavedAt:
 class Brand(Base, SavedAt):
     __tablename__ = "brand"
 
-    brand_id = mapped_column(Integer, primary_key=True)
+    brand_id: Mapped[int] = mapped_column(primary_key=True)
     url: Mapped[str]
     label: Mapped[str]
     # probably it's not necessary field
@@ -49,7 +49,7 @@ class Brand(Base, SavedAt):
 class Model(Base, SavedAt):
     __tablename__ = "model"
 
-    model_id = mapped_column(Integer, primary_key=True)
+    model_id: Mapped[int] = mapped_column(primary_key=True)
     label: Mapped[str]
     brand_id = mapped_column(ForeignKey("brand.brand_id"))
 
@@ -57,7 +57,7 @@ class Model(Base, SavedAt):
 class Advert(Base, SavedAt):
     __tablename__ = "advert"
 
-    advert_id = mapped_column(Integer, primary_key=True)
+    advert_id: Mapped[int] = mapped_column(primary_key=True)
     url: Mapped[str]
     description: Mapped[str | None]
     published_at: Mapped[datetime.datetime] = mapped_column(
@@ -77,7 +77,7 @@ class Phone(Base):
     __tablename__ = "phone"
 
     code = mapped_column(String(8), primary_key=True)
-    number = mapped_column(Integer, primary_key=True)
+    number: Mapped[int] = mapped_column(primary_key=True)
 
     adverts: Mapped[list["Advert"]] = relationship(
         "Advert", secondary="phone_advert"
@@ -92,7 +92,7 @@ class PhoneAdvert(Base):
     )
 
     code = mapped_column(String(8), primary_key=True)
-    number = mapped_column(Integer, primary_key=True)
+    number: Mapped[int] = mapped_column(primary_key=True)
 
     __table_args__ = (
         ForeignKeyConstraint([code, number], [Phone.code, Phone.number]),
