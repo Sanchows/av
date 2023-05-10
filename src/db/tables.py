@@ -98,10 +98,3 @@ class PhoneAdvert(Base):
         ForeignKeyConstraint([code, number], [Phone.code, Phone.number]),
         {},
     )
-    # code = mapped_column(Integer, ForeignKey("phone.code"), primary_key=True)
-    # number = mapped_column(
-    #     Integer, ForeignKey("phone.number"), primary_key=True
-    # )
-
-    # advert = relationship("Advert", foreign_keys=[advert_id])
-    # phone = relationship("Phone", foreign_keys=[code, number])
