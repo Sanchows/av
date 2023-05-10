@@ -1,6 +1,12 @@
 import datetime
 
-from sqlalchemy import DateTime, ForeignKey, ForeignKeyConstraint, Integer, String
+from sqlalchemy import (
+    DateTime,
+    ForeignKey,
+    ForeignKeyConstraint,
+    Integer,
+    String,
+)
 from sqlalchemy.ext.compiler import compiles
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import relationship
@@ -88,9 +94,10 @@ class PhoneAdvert(Base):
     code = mapped_column(String(8), primary_key=True)
     number = mapped_column(Integer, primary_key=True)
 
-    __table_args__ = (ForeignKeyConstraint([code, number],
-                                           [Phone.code, Phone.number]),
-                      {})
+    __table_args__ = (
+        ForeignKeyConstraint([code, number], [Phone.code, Phone.number]),
+        {},
+    )
     # code = mapped_column(Integer, ForeignKey("phone.code"), primary_key=True)
     # number = mapped_column(
     #     Integer, ForeignKey("phone.number"), primary_key=True
