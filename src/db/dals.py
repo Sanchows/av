@@ -2,7 +2,6 @@ from sqlalchemy import and_, delete, or_
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
 
 from db import tables
 from parsing.adverts import Advert
@@ -108,21 +107,20 @@ class BrandDAL:
         )
 
 
-# class PhoneDAL:
-#     """Data Access Layer for operating phone info"""
+class PhoneDAL:
+    """Data Access Layer for operating phone info"""
 
-#     def __init__(self, db_session: AsyncSession):
-#         self.db_session = db_session
+    def __init__(self, db_session: AsyncSession):
+        self.db_session = db_session
 
-#     async def clean_phones(self):
-#         await self.db_session.execute(delete(tables.Phone))
+    async def clean_phones(self):
+        await self.db_session.execute(delete(tables.Phone))
 
-#     async def save_phones(self, phones: tuple[Phone]):
-#         self.db_session.add_all(
-#             tables.Phone(
-#                 model_id=phone.model_id,
-#                 code=phone.code,
-#                 number=phone.number,
-#             )
-#             for phone in phones
-#         )
+    async def save_phones(self, phones: tuple[Phone]):
+        self.db_session.add_all(
+            tables.Phone(
+                code=phone.code,
+                number=phone.number,
+            )
+            for phone in phones
+        )
