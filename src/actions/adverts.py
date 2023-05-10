@@ -16,3 +16,10 @@ async def get_adverts():
             advert_dal = AdvertDAL(session)
             for item in await advert_dal.get_all_adverts():
                 yield item
+
+
+async def clean_adverts():
+    async with get_session() as session:
+        async with session.begin():
+            advert_dal = AdvertDAL(session)
+            await advert_dal.clean_adverts()
