@@ -62,9 +62,8 @@ class Model(Base, SavedUpdatedAt):
 class Phone(Base):
     __tablename__ = "phone"
 
-    phone_id = Column(Integer, primary_key=True)
-    code = Column(String(8), nullable=False)
-    number = Column(Integer, nullable=False)
+    code = Column(String(8), primary_key=True)
+    number = Column(Integer, primary_key=True)
 
     adverts = relationship(
         "Advert", secondary="phone_advert", back_populates="phones",
@@ -77,4 +76,6 @@ class PhoneAdvert(Base):
     advert_id = Column(
         Integer, ForeignKey("advert.advert_id"), primary_key=True
     )
-    phone_id = Column(Integer, ForeignKey("phone.phone_id"), primary_key=True)
+
+    code = Column(Integer, ForeignKey("phone.code"), primary_key=True)
+    number = Column(Integer, ForeignKey("phone.number"), primary_key=True)
