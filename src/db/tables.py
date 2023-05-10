@@ -37,7 +37,7 @@ class Advert(Base, SavedUpdatedAt):
     refreshed_at = Column(DateTime(timezone=True), nullable=True)
 
     phones = relationship(
-        "Phone", secondary="phone_advert", back_populates="advert"
+        "Phone", secondary="phone_advert", back_populates="adverts"
     )
 
 
@@ -66,7 +66,7 @@ class Phone(Base):
     code = Column(String(8), nullable=False)
     number = Column(Integer, nullable=False)
     adverts = relationship(
-        "Advert", secondary="phone_advert", back_populates="phone"
+        "Advert", secondary="phone_advert", back_populates="phones"
     )
 
 
