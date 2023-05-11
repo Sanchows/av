@@ -1,10 +1,11 @@
 import asyncio
+from datetime import datetime
 import itertools
+import resource
 
-from actions.adverts import clean_adverts, create_adverts
+from actions.adverts import create_adverts
 from actions.brands import clean_brands, create_brands
 from actions.models import clean_models, create_models
-
 from parsing.adverts import get_adverts_by_model
 from parsing.brands import get_brands
 from parsing.models import get_models_by_brand
@@ -24,10 +25,6 @@ def batch(iterable, size):
     it = iter(iterable)
     while item := tuple(itertools.islice(it, size)):
         yield item
-
-
-from datetime import datetime
-import resource
 
 
 async def main():

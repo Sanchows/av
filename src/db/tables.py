@@ -3,7 +3,7 @@ import datetime
 from sqlalchemy import (
     DateTime,
     ForeignKey,
-    ForeignKeyConstraint,
+    PrimaryKeyConstraint,
     String,
 )
 from sqlalchemy.ext.compiler import compiles
@@ -70,32 +70,39 @@ class Advert(Base, SavedAt, UpdatedAt):
     refreshed_at: Mapped[datetime.datetime | None] = mapped_column(
         DateTime(timezone=True)
     )
-
-    phones: Mapped[list["PhoneAdvert"]] = relationship(back_populates="advert")
+    phones: Mapped[list["PhoneAdvert"]] = relationship(
+        back_populates="advert_item"
+    )
 
 
 class Phone(Base):
     __tablename__ = "phone"
 
-    code = mapped_column(String(8), primary_key=True)
-    number: Mapped[int] = mapped_column(primary_key=True)
-
-    adverts: Mapped[list["PhoneAdvert"]] = relationship(back_populates="phone")
+    # code = mapped_column(String(8), primary_key=True)
+    number = mapped_column(String(15), primary_key=True)
+    adverts: Mapped[list["PhoneAdvert"]] = relationship(
+        back_populates="phone_number"
+    )
 
 
 class PhoneAdvert(Base, SavedAt, UpdatedAt):
     __tablename__ = "phone_advert"
 
     advert_id: Mapped[int] = mapped_column(
-        ForeignKey("advert.advert_id"), primary_key=True
+        ForeignKey("advert.advert_id"),
     )
-    code = mapped_column(String(8), primary_key=True)
-    number: Mapped[int] = mapped_column(primary_key=True)
+    # code = mapped_column(String(8), ForeignKey("phone.code"),)
+    number = mapped_column(
+        String(15),
+        ForeignKey("phone.number"),
+    )
 
     __table_args__ = (
-        ForeignKeyConstraint([code, number], [Phone.code, Phone.number]),
-        {},
+        PrimaryKeyConstraint(
+            advert_id,
+            number,
+        ),
     )
 
-    phone: Mapped["Phone"] = relationship(back_populates="adverts")
-    advert: Mapped["Advert"] = relationship(back_populates="phones")
+    phone_number: Mapped["Phone"] = relationship(back_populates="adverts")
+    advert_item: Mapped["Advert"] = relationship(back_populates="phones")

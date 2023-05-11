@@ -1,5 +1,3 @@
-from typing import Iterable
-
 from sqlalchemy import and_, delete, or_
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
@@ -9,7 +7,7 @@ from db import tables
 from parsing.adverts import Advert
 from parsing.brands import Brand
 from parsing.models import Model
-from parsing.phones import Phone
+from parsing.phones import PhoneInfo
 
 
 class AdvertDAL:
@@ -118,11 +116,39 @@ class PhoneDAL:
     async def clean_phones(self):
         await self.db_session.execute(delete(tables.Phone))
 
-    async def save_phones(self, phones: Iterable[Phone]):
-        self.db_session.add_all(
-            tables.Phone(
-                code=phone.code,
-                number=phone.number,
-            )
-            for phone in phones
+    async def save_phones(self, phone_info: PhoneInfo):
+        if phone_info.phones is None:
+            return
+
+        phones_for_insert = tuple(
+            dict(number=phone.number) for phone in phone_info.phones
         )
+        phones_adverts_for_insert = tuple(
+            dict(advert_id=phone_info.advert_id, number=phone.number)
+            for phone in phone_info.phones
+        )
+
+        query_phone = insert(tables.Phone).values(phones_for_insert)
+        query_phone = query_phone.on_conflict_do_nothing()
+
+        await self.db_session.execute(query_phone)
+
+        query_phone_advert = insert(tables.PhoneAdvert).values(
+            phones_adverts_for_insert
+        )
+
+        data_for_update = {
+            c.name: c
+            for c in query_phone_advert.excluded
+            if c.name != "saved_at"
+        }
+
+        query_phone_advert = query_phone_advert.on_conflict_do_update(
+            index_elements=[
+                "advert_id",
+                "number",
+            ],
+            set_=data_for_update,
+            # TODO: where=...
+        )
+        await self.db_session.execute(query_phone_advert)

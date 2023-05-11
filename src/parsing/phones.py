@@ -5,14 +5,20 @@ from parsing import client
 
 @dataclass
 class Phone:
-    code: str
-    number: str
+    code: str | None
+    number: str | None
 
 
-async def get_phones(advert_id: int) -> tuple[Phone] | None:
+@dataclass
+class PhoneInfo:
+    advert_id: int
+    phones: tuple[Phone] | None
+
+
+async def get_phones(advert_id: int) -> PhoneInfo:
     phones = await _get_phones(advert_id=advert_id)
 
-    return phones
+    return PhoneInfo(advert_id=advert_id, phones=phones)
 
 
 async def _get_phones(advert_id: int) -> tuple[Phone] | None:
