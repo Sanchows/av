@@ -32,8 +32,13 @@ def pg_utcnow(element, compiler, **kw):
 class SavedAt:
     # Datetime of saving to db
 
-    # People recommend to use server_default
     saved_at: Mapped[datetime.datetime] = mapped_column(default=utcnow())
+
+
+class UpdatedAt:
+    # Datetime of updating in db
+
+    updated_at: Mapped[datetime.datetime] = mapped_column(default=utcnow())
 
 
 class Brand(Base, SavedAt):
@@ -54,7 +59,7 @@ class Model(Base, SavedAt):
     brand_id = mapped_column(ForeignKey("brand.brand_id"))
 
 
-class Advert(Base, SavedAt):
+class Advert(Base, SavedAt, UpdatedAt):
     __tablename__ = "advert"
 
     advert_id: Mapped[int] = mapped_column(primary_key=True)
@@ -66,7 +71,6 @@ class Advert(Base, SavedAt):
     refreshed_at: Mapped[datetime.datetime | None] = mapped_column(
         DateTime(timezone=True)
     )
-    updated_at: Mapped[datetime.datetime] = mapped_column(default=utcnow())
 
     phones: Mapped[list["PhoneAdvert"]] = relationship(back_populates="advert")
 
@@ -80,13 +84,12 @@ class Phone(Base):
     adverts: Mapped[list["PhoneAdvert"]] = relationship(back_populates="phone")
 
 
-class PhoneAdvert(Base):
+class PhoneAdvert(Base, SavedAt, UpdatedAt):
     __tablename__ = "phone_advert"
 
     advert_id: Mapped[int] = mapped_column(
         ForeignKey("advert.advert_id"), primary_key=True
     )
-
     code = mapped_column(String(8), primary_key=True)
     number: Mapped[int] = mapped_column(primary_key=True)
 
