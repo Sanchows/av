@@ -68,9 +68,7 @@ class Advert(Base, SavedAt):
     )
     updated_at: Mapped[datetime.datetime] = mapped_column(default=utcnow())
 
-    phones: Mapped[list["Phone"]] = relationship(
-        "Phone", secondary="phone_advert"
-    )
+    phones: Mapped[list["PhoneAdvert"]] = relationship(back_populates="advert")
 
 
 class Phone(Base):
@@ -79,16 +77,14 @@ class Phone(Base):
     code = mapped_column(String(8), primary_key=True)
     number: Mapped[int] = mapped_column(primary_key=True)
 
-    adverts: Mapped[list["Advert"]] = relationship(
-        "Advert", secondary="phone_advert"
-    )
+    adverts: Mapped[list["PhoneAdvert"]] = relationship(back_populates="phone")
 
 
 class PhoneAdvert(Base):
     __tablename__ = "phone_advert"
 
-    advert_id = mapped_column(
-        Integer, ForeignKey("advert.advert_id"), primary_key=True
+    advert_id: Mapped[int] = mapped_column(
+        ForeignKey("advert.advert_id"), primary_key=True
     )
 
     code = mapped_column(String(8), primary_key=True)
@@ -98,3 +94,6 @@ class PhoneAdvert(Base):
         ForeignKeyConstraint([code, number], [Phone.code, Phone.number]),
         {},
     )
+
+    phone: Mapped["Phone"] = relationship(back_populates="adverts")
+    advert: Mapped["Advert"] = relationship(back_populates="phones")
