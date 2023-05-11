@@ -67,6 +67,23 @@ class Advert:
 #     pass
 
 
+def clean_duplicates(adverts: list[Advert]):
+    # A sense of this function:
+    # Sometimes there may be situations when the parser is working and parsing
+    # page after page, and at the same time new adverts appear on the website.
+    # In this case we append parsed adverts, but when we step on the next page
+    # we will parse adverts again that we parsed on the previous page, because
+    # adverts move through the pages depending on total of their count.
+    # And there are no ideas how to control it.
+
+    unique_ids = set({})
+
+    for advert in adverts:
+        if advert.advert_id in unique_ids:
+            adverts.remove(advert)
+        unique_ids.add(advert.advert_id)
+
+
 async def get_adverts_by_model(model: Model) -> list[Advert]:
     pagecount_and_adverts = await _get_pagecount_and_adverts_by_model(
         model=model,
@@ -82,6 +99,7 @@ async def get_adverts_by_model(model: Model) -> list[Advert]:
                 for page_number in range(2, page_count + 1)
             )
         )
+    clean_duplicates(adverts=adverts)
 
     return adverts
 
