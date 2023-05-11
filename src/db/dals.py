@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from sqlalchemy import and_, delete, or_
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
@@ -116,7 +118,7 @@ class PhoneDAL:
     async def clean_phones(self):
         await self.db_session.execute(delete(tables.Phone))
 
-    async def save_phones(self, phones: tuple[Phone]):
+    async def save_phones(self, phones: Iterable[Phone]):
         self.db_session.add_all(
             tables.Phone(
                 code=phone.code,

@@ -4,7 +4,6 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     ForeignKeyConstraint,
-    Integer,
     String,
 )
 from sqlalchemy.ext.compiler import compiles
