@@ -1,5 +1,3 @@
-from typing import Iterable
-
 from db.dals import PhoneDAL
 from db.session import get_session
 from parsing.phones import PhoneInfo

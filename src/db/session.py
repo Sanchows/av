@@ -12,12 +12,12 @@ engine = create_async_engine(
     echo=False,
 )
 
-async_session = sessionmaker(engine, class_=AsyncSession)
+async_session = sessionmaker(engine, class_=AsyncSession)  # type: ignore
 
 
 @asynccontextmanager
 async def get_session():
     """Dependency for getting async session"""
 
-    async with async_session() as session:
+    async with async_session() as session:  # type: ignore
         yield session
