@@ -1,7 +1,7 @@
 import asyncio
 
 
-async def gather_data(*coros_or_futures) -> tuple:
+async def _gather_data(*coros_or_futures) -> tuple:
     """
     Returns parsed elements, since each of the coros returns nested
     combinations of lists/tuples

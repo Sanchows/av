@@ -3,7 +3,7 @@ from datetime import datetime
 
 from parsing import client
 from parsing.models import Model
-from parsing.utils import gather_data
+from parsing.utils import _gather_data
 
 # from parsing.phones import Phone, get_phones
 
@@ -93,7 +93,7 @@ async def get_adverts_by_model(model: Model) -> list[Advert]:
     page_count, adverts = pagecount_and_adverts
 
     if page_count > 1:
-        adverts += await gather_data(
+        adverts += await _gather_data(
             *(
                 _parse_adverts_by_page(model=model, page_number=page_number)
                 for page_number in range(2, page_count + 1)
