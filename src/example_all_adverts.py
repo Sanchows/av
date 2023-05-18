@@ -2,6 +2,7 @@ import asyncio
 from datetime import datetime
 import itertools
 import resource
+from typing import Generator, Iterable, TypeVar
 
 from actions.adverts import create_adverts
 from actions.brands import clean_brands, create_brands
@@ -9,10 +10,13 @@ from actions.models import clean_models, create_models
 from parsing.adverts import get_adverts_by_model
 from parsing.brands import get_brands
 from parsing.models import get_models_by_brand
-from parsing.utils import gather_data
+from parsing.utils import _gather_data
 
 
-def batch(iterable, size):
+T = TypeVar("T")
+
+
+def batch(iterable: Iterable[T], size: int) -> Generator[tuple[T], None, None]:
     """
     Chunks an iterable object to the items.
 
@@ -42,8 +46,8 @@ async def main():
     await create_brands(brands=brands)
 
     print("Собираем модели")
-    models = await gather_data(
-        *(get_models_by_brand(brand=brand) for brand in brands),
+    models = await _gather_data(
+        *(get_models_by_brand(brand=brand) for brand in brands[:3]),
     )
     print("Сохраняем модели в бд")
     await create_models(models=models)
@@ -55,7 +59,7 @@ async def main():
             f"Собираем объявления, еще осталось собрать объявления "
             f"с {remaining} моделей. Всего {len_models} моделей"
         )
-        adverts = await gather_data(
+        adverts = await _gather_data(
             *(get_adverts_by_model(model=model) for model in batched_models)
         )
         print(f"Сохраняем объявления ({len(adverts)} шт.) в бд")
