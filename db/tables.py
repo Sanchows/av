@@ -71,7 +71,7 @@ class Advert(Base, SavedAt, UpdatedAt):
         DateTime(timezone=True)
     )
     phones: Mapped[list["PhoneAdvert"]] = relationship(
-        back_populates="advert_item"
+        back_populates="advert_item", cascade="all, delete"
     )
 
 
@@ -81,7 +81,7 @@ class Phone(Base):
     # code = mapped_column(String(8), primary_key=True)
     number = mapped_column(String(15), primary_key=True)
     adverts: Mapped[list["PhoneAdvert"]] = relationship(
-        back_populates="phone_number"
+        back_populates="phone_number", passive_deletes=True,
     )
 
 
@@ -89,12 +89,12 @@ class PhoneAdvert(Base, SavedAt, UpdatedAt):
     __tablename__ = "phone_advert"
 
     advert_id: Mapped[int] = mapped_column(
-        ForeignKey("advert.advert_id"),
+        ForeignKey("advert.advert_id", ondelete="CASCADE"),
     )
     # code = mapped_column(String(8), ForeignKey("phone.code"),)
     number = mapped_column(
         String(15),
-        ForeignKey("phone.number"),
+        ForeignKey("phone.number", ondelete="CASCADE"),
     )
 
     __table_args__ = (
