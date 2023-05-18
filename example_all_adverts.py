@@ -47,7 +47,7 @@ async def main():
 
     print("Собираем модели")
     models = await _gather_data(
-        *(get_models_by_brand(brand=brand) for brand in brands[:3]),
+        *(get_models_by_brand(brand=brand) for brand in brands),
     )
     print("Сохраняем модели в бд")
     await create_models(models=models)
