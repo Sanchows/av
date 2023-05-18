@@ -160,4 +160,4 @@ cython_debug/
 #.idea/
 
 fake_useragent*.json
-src/migrations/versions/
+src/migrations/versions/*.py
